@@ -38,7 +38,7 @@ You can hit 'h' to get help.  The help is as follows:
             txx... toggle relays
             c turn off all relays
 
-xx is one or more numbers between 0 and 7.  For now, 7 corresponds to relay 1, and 0 to relay 8.  The sketch
+Where _xx_ is one or more numbers between 0 and 7.  For now, 7 corresponds to relay 1, and 0 to relay 8.  The sketch
 in this repository fixes the ordering.
 
 Also, if you don't have local echo set and forget your place or make a mistake, you can hit ESC or x while
@@ -50,3 +50,12 @@ Hacking
 The XBee is fairly hard to work with, a bluetooth solution may be better, and/or a Nordic chip.  If you want
 to change the wireless configuration, please create a topic branch named for the technology used, and update
 the <a href="#conn">Connecting</a> section of this readme with instructions.
+
+Also, be sure to disconnect the Arduino completely from the power strip circuitry before plugging in the 
+USB cable.  Else you'll let out blue smoke.
+
+<font color="red">*DANGER*</font>
+---------
+
+The power strip switches mains voltage.  Assume ANY wire inside is carrying 120VAC.  Be sure to unplug before opening
+the power strip.  Neither Hack Manhattan nor I am responsible for any electrocutions.

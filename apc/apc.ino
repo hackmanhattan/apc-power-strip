@@ -86,4 +86,6 @@ void help()
   Serial.println("fxx... turn relays off");
   Serial.println("txx... toggle relays");
   Serial.println("c turn off all relays");
+  Serial.println("xx above is one or more numbers between 0 and 7, corresponding to relays 1 through 8");
+  Serial.println("Press the ESC or x key while entering numbers to cancel the current command");
 }
