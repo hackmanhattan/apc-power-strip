@@ -7,11 +7,11 @@ Setup
 =====
 
 Depending on your platform, you may need to install the FTDI driver to be able to communicate with
-the XBee.  Go to (http://www.ftdichip.com/Drivers/VCP.htm) and select the driver appropriate for your platform.
+the XBee.  Go to http://www.ftdichip.com/Drivers/VCP.htm and select the driver appropriate for your platform.
 
 You may need to reboot after installing the driver :-/
 
-[conn]Connecting
+[conn]:Connecting
 ==========
 
 The XBee built into the power strip is set to talk with the XBee on Robby O'Connor's XBee explorer.  If you are
@@ -31,12 +31,12 @@ Usage
 
 You can hit 'h' to get help.  The help is as follows:
 
-*** HELP ***
-Commands are followed by one or more numbers indicating the relay to change
-    nxx... turn relays on
-    fxx... turn relays off
-    txx... toggle relays
-    c turn off all relays
+        *** HELP ***
+        Commands are followed by one or more numbers indicating the relay to change
+            nxx... turn relays on
+            fxx... turn relays off
+            txx... toggle relays
+            c turn off all relays
 
 xx is one or more numbers between 0 and 7.  For now, 7 corresponds to relay 1, and 0 to relay 8.  The sketch
 in this repository fixes the ordering.
