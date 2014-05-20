@@ -7,16 +7,16 @@ Setup
 =====
 
 Depending on your platform, you may need to install the FTDI driver to be able to communicate with
-the XBee.  Go to [http://www.ftdichip.com/Drivers/VCP.htm] and select the driver appropriate for your platform.
+the XBee.  Go to (http://www.ftdichip.com/Drivers/VCP.htm) and select the driver appropriate for your platform.
 
 You may need to reboot after installing the driver :-/
 
-Connecting
+[conn]Connecting
 ==========
 
 The XBee built into the power strip is set to talk with the XBee on Robby O'Connor's XBee explorer.  If you are
 well versed in the ways of the XBee, you may install 
-(XCTU-ng)[http://www.digi.com/support/productdetail?pid=3430&type=utilities] and change the settings.
+[XCTU-ng](http://www.digi.com/support/productdetail?pid=3430&type=utilities) and change the settings.
 
 Mind you, XBees are relatively hard to work with, there's a bit of voodoo involved, so really be sure you know what
 you're doing or you'll brick one or both XBees, or make them unable to talk to each other.  
@@ -49,4 +49,4 @@ Hacking
 
 The XBee is fairly hard to work with, a bluetooth solution may be better, and/or a Nordic chip.  If you want
 to change the wireless configuration, please create a topic branch named for the technology used, and update
-the "Connecting" section of this readme with instructions.
+the [Connecting][conn] section of this readme with instructions.
