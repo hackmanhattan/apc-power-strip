@@ -11,7 +11,7 @@ the XBee.  Go to http://www.ftdichip.com/Drivers/VCP.htm and select the driver a
 
 You may need to reboot after installing the driver :-/
 
-[conn]:Connecting
+<a name="conn">Connecting</a>
 ==========
 
 The XBee built into the power strip is set to talk with the XBee on Robby O'Connor's XBee explorer.  If you are
@@ -49,4 +49,4 @@ Hacking
 
 The XBee is fairly hard to work with, a bluetooth solution may be better, and/or a Nordic chip.  If you want
 to change the wireless configuration, please create a topic branch named for the technology used, and update
-the [Connecting][conn] section of this readme with instructions.
+the <a href="#conn">Connecting</a> section of this readme with instructions.
