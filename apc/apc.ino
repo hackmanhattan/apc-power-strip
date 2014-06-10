@@ -40,6 +40,9 @@ void loop()
           doShift();
         } else if (b == 'h') {
           help();
+        } else if (b == 'q') {
+          query();
+          Serial.println(buf);
         }
         break;
       case TARGETS:
@@ -61,7 +64,7 @@ void loop()
           state = COMMAND;
         } else {
           switchstate = newstate;
-          Serial.println(switchstate, BIN);
+          query()
           doShift();
           state = COMMAND;
         }
@@ -88,4 +91,12 @@ void help()
   Serial.println("c turn off all relays");
   Serial.println("xx above is one or more numbers between 0 and 7, corresponding to relays 1 through 8");
   Serial.println("Press the ESC or x key while entering numbers to cancel the current command");
+}
+
+void query()
+{
+    for (unsigned char b=128; b; b >>= 1) {
+        Serial.print((switchstate & b) ? "1" : "0");
+    }
+    Serial.println();
 }
