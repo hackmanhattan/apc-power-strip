@@ -1,3 +1,5 @@
+#include <EEPROM.h>
+
 const uint8_t clock = 2;
 const uint8_t strobe = 3;
 const uint8_t di = 4;
@@ -11,7 +13,11 @@ typedef enum _states {
 uint8_t command = 0;
 
 static const int NUM_OUTLETS = 8;
-uint32_t timeLimits[NUM_OUTLETS] = {0};
+struct Limits {
+  uint32_t timeLimits[NUM_OUTLETS];
+} limits;
+
+uint32_t *timeLimits = limits.timeLimits;
 uint32_t startTimes[NUM_OUTLETS] = {0};
 
 void setup()
@@ -22,7 +28,13 @@ void setup()
   digitalWrite(strobe, LOW);
   pinMode(di, OUTPUT);
   digitalWrite(di, LOW);
-  Serial.begin(9600);
+  doShift();
+  if (EEPROM.read(0) == 0xd9) {
+    EEPROM.get(1, limits);
+  } else {
+    memset(&limits, 0, sizeof(limits));
+  }
+  Serial.begin(57600);
   Serial.println("ready");
 }
 
@@ -80,7 +92,6 @@ void loop()
         } else {
           uint8_t switchedOn = newstate & (newstate ^ switchstate);
           switchstate = newstate;
-          query();
           doShift();
           state = COMMAND;
           for (unsigned char b=128, n=7; b; b >>= 1, --n) {
@@ -88,6 +99,7 @@ void loop()
               startTimes[n] = millis();
             }
           }
+          query();
         }
         break;
       case LIMIT:
@@ -119,7 +131,7 @@ void loop()
 
 void doShift()
 {
-  shiftOut(di,clock,LSBFIRST,switchstate);
+  shiftOut(di,clock,MSBFIRST,switchstate);
   digitalWrite(strobe, HIGH);
   delay(1);
   digitalWrite(strobe, LOW);
@@ -129,8 +141,8 @@ void checkLimits()
 {
   uint8_t rbit = 0;
   for (unsigned char b=128, n=7; b; b >>= 1, --n) {
-    if ((switchstate & b)) {
-      if (startTimes[n] + timeLimits[n] >= millis()) {
+    if ((switchstate & b) && timeLimits[n]) {
+      if (startTimes[n] + timeLimits[n] <= millis()) {
         rbit |= b;
         Serial.print((short)n); Serial.println(" turning off due to timeout");
       }
@@ -149,6 +161,8 @@ void setLimits(uint8_t bits, uint32_t limit)
       timeLimits[n] = limit;
     }
   }
+  EEPROM.put(1, limits);
+  EEPROM.write(0, 0xd9);
 }
 
 void printTime(uint32_t ms)
@@ -181,6 +195,8 @@ void help()
 {
   Serial.println("*** HELP ***");
   Serial.println("Commands are followed by one or more numbers indicating the relay to change");
+  Serial.println("h This help menu");
+  Serial.println("q query current state");
   Serial.println("nxx... turn relays on");
   Serial.println("fxx... turn relays off");
   Serial.println("txx... toggle relays");
