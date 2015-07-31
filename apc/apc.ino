@@ -31,6 +31,9 @@ void loop()
   static uint8_t rbit = 0;
   static uint32_t limit = 0;
   static uint32_t buf = 0;
+
+  checkLimits();
+  
   while (Serial.available()) {
     char b = Serial.read();
     switch (state) {
@@ -69,19 +72,30 @@ void loop()
           state = LIMIT;
           limit = 0;
           buf = 0;
+        } else if (b == ' ') {
+          break;
         } else if (b == 27 || b == 'x') {
           Serial.println("Abort");
           state = COMMAND;
         } else {
+          uint8_t switchedOn = newstate & (newstate ^ switchstate);
           switchstate = newstate;
           query();
           doShift();
           state = COMMAND;
+          for (unsigned char b=128, n=7; b; b >>= 1, --n) {
+            if (switchedOn & b) {
+              startTimes[n] = millis();
+            }
+          }
         }
         break;
       case LIMIT:
         if (b == ' ') break;
-        else if (b >= '0' && b <= '9') {
+        else if (b == 'x' || b == 27) {
+          Serial.println("Abort");
+          state = COMMAND;
+        } else if (b >= '0' && b <= '9') {
           buf = buf * 10 + (b - '0');
         } else if (b == 'm') {
           limit += buf * 60000;
@@ -109,6 +123,23 @@ void doShift()
   digitalWrite(strobe, HIGH);
   delay(1);
   digitalWrite(strobe, LOW);
+}
+
+void checkLimits()
+{
+  uint8_t rbit = 0;
+  for (unsigned char b=128, n=7; b; b >>= 1, --n) {
+    if ((switchstate & b)) {
+      if (startTimes[n] + timeLimits[n] >= millis()) {
+        rbit |= b;
+        Serial.print((short)n); Serial.println(" turning off due to timeout");
+      }
+    }
+  }
+  if (rbit) {
+    switchstate &= ~rbit;
+    doShift();
+  }
 }
 
 void setLimits(uint8_t bits, uint32_t limit)
@@ -153,7 +184,7 @@ void help()
   Serial.println("nxx... turn relays on");
   Serial.println("fxx... turn relays off");
   Serial.println("txx... toggle relays");
-  Serial.println("lxx... = yy set limit time in seconds.  A limit of 0 means unlimited");
+  Serial.println("lxx... = yy set limit time.  A limit of 0 means unlimited.  You can use h,m,s to express time, e.g. 1h30m");
   Serial.println("xx above is one or more numbers between 0 and 7, corresponding to relays 1 through 8, or * to indicate all");
   Serial.println("Press the ESC or x key while entering numbers to cancel the current command");
 }
